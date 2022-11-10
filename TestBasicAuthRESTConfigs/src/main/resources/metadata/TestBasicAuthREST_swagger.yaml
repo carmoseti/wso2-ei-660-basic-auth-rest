@@ -1,0 +1,13 @@
+openapi: 3.0.1
+info:
+  title: TestBasicAuthREST
+  description: API Definition of TestBasicAuthREST
+  version: 1.0.0
+servers:
+- url: http://localhost:8290/TestBasicAuthREST
+paths:
+  /:
+    get:
+      responses:
+        default:
+          description: Default response
