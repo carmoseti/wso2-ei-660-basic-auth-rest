@@ -2,11 +2,47 @@
 <api context="/TestBasicAuthREST" name="TestBasicAuthREST" xmlns="http://ws.apache.org/ns/synapse">
     <resource methods="GET">
         <inSequence>
-            <log description="Log FULL" level="full" separator="&#xa;"/>
             <property description="Set Basic Auth Header" expression="fn:concat('Basic ', base64Encode(fn:concat(wso2:vault-lookup('TBAR.Basic.User'),':',wso2:vault-lookup('TBAR.Basic.Password'))))" name="Authorization" scope="transport" type="STRING"/>
+            <log description="Log FULL" level="full" separator="&#xa;">
+                <property expression="$trp:Authorization" name="Authorization"/>
+            </log>
+            <property description="Set API Url" name="uri.var.api_url" scope="default" type="STRING" value="https://postman-echo.com/basic-auth"/>
             <call>
                 <endpoint>
-                    <http method="get" uri-template="https://postman-echo.com/basic-auth">
+                    <http method="get" uri-template="{uri.var.api_url}">
+                        <timeout>
+                            <responseAction>fault</responseAction>
+                        </timeout>
+                        <suspendOnFailure>
+                            <initialDuration>-1</initialDuration>
+                            <progressionFactor>-1</progressionFactor>
+                            <maximumDuration>0</maximumDuration>
+                        </suspendOnFailure>
+                        <markForSuspension>
+                            <retriesBeforeSuspension>0</retriesBeforeSuspension>
+                        </markForSuspension>
+                    </http>
+                </endpoint>
+            </call>
+            <log description="Log FULL" level="full" separator="&#xa;"/>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </resource>
+    <resource methods="POST" url-mapping="/post">
+        <inSequence>
+            <property description="Set Basic Auth Header" expression="fn:concat('Basic ', base64Encode(fn:concat(wso2:vault-lookup('TBAR.Basic.User'),':',wso2:vault-lookup('TBAR.Basic.Password'))))" name="Authorization" scope="transport" type="STRING"/>
+            <log description="Log FULL" level="full" separator="&#xa;">
+                <property expression="$trp:Authorization" name="Authorization"/>
+            </log>
+            <property description="Set API Url" name="uri.var.api_url" scope="default" type="STRING" value="https://postman-echo.com/post"/>
+            <call>
+                <endpoint>
+                    <http method="post" uri-template="{uri.var.api_url}">
+                        <timeout>
+                            <responseAction>fault</responseAction>
+                        </timeout>
                         <suspendOnFailure>
                             <initialDuration>-1</initialDuration>
                             <progressionFactor>-1</progressionFactor>
